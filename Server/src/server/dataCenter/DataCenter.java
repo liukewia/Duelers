@@ -34,17 +34,17 @@ import server.gameCenter.models.game.TempStory;
 
 public class DataCenter extends Thread {
 
-    private static final String ACCOUNTS_PATH = "resources/accounts";
-    private static final String CUSTOM_CARD_PATH = "resources/customCards";
+    private static final String ACCOUNTS_PATH = "Server/resources/accounts";
+    private static final String CUSTOM_CARD_PATH = "Server/resources/customCards";
     private static final String[] CARDS_PATHS = {
-            "resources/heroCards",
-            "resources/minionCards",
-            "resources/spellCards",
-            "resources/itemCards/collectible",
-            "resources/itemCards/usable",
+            "Server/resources/heroCards",
+            "Server/resources/minionCards",
+            "Server/resources/spellCards",
+            "Server/resources/itemCards/collectible",
+            "Server/resources/itemCards/usable",
             CUSTOM_CARD_PATH};
     private static final String FLAG_PATH = "Server/resources/itemCards/flag/Flag.item.card.json";
-    private static final String STORIES_PATH = "resources/stories";
+    private static final String STORIES_PATH = "Server/resources/stories";
 
     private static DataCenter ourInstance = new DataCenter();
 
@@ -157,6 +157,7 @@ public class DataCenter extends Thread {
         if (message.getAccountFields().getUsername() == null || message.getSender() == null) {
             throw new ClientException("invalid message!");
         }
+        System.out.println(message.getAccountFields().getUsername());
         Account account = getAccount(message.getAccountFields().getUsername());
         if (!ClientPortal.getInstance().hasThisClient(message.getSender())) {
             throw new LogicException("Client Wasn't Added!");

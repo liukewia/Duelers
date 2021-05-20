@@ -19,17 +19,17 @@ import server.gameCenter.models.game.TempStory;
 
 public class Rest implements DataBase {
 
-    private static final String ACCOUNTS_PATH = "resources/accounts";
-    private static final String CUSTOM_CARD_PATH = "resources/customCards";
+    private static final String ACCOUNTS_PATH = "Server/resources/accounts";
+    private static final String CUSTOM_CARD_PATH = "Server/resources/customCards";
     private static final String[] CARDS_PATHS = {
-            "resources/heroCards",
-            "resources/minionCards",
-            "resources/spellCards",
-            "resources/itemCards/collectible",
-            "resources/itemCards/usable",
+            "Server/resources/heroCards",
+            "Server/resources/minionCards",
+            "Server/resources/spellCards",
+            "Server/resources/itemCards/collectible",
+            "Server/resources/itemCards/usable",
             CUSTOM_CARD_PATH};
     private static final String FLAG_PATH = "Server/resources/itemCards/flag/Flag.item.card.json";
-    private static final String STORIES_PATH = "resources/stories";
+    private static final String STORIES_PATH = "Server/resources/stories";
     final String baseAddress = "http://127.0.0.1:8080/";
 
     public Rest() {

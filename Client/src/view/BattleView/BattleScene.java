@@ -26,7 +26,7 @@ import static controller.SoundEffectPlayer.SoundName.victory_match;
 public class BattleScene extends Show {
     private static final String WINNER_SPRITE_NAME = "fx_winner";
     private static Media backgroundMusic = new Media(
-            new File("resources/music/music_battlemap_vetruv.m4a").toURI().toString()
+            new File("Client/resources/music/music_battlemap_vetruv.m4a").toURI().toString()
     );
     private static final Map<SpellType, String> spellSpriteNames = new HashMap();
     private final GameActions controller;
@@ -70,7 +70,7 @@ public class BattleScene extends Show {
 
     private void addBackGround(String address) {
         try {
-            Image image = new Image(new FileInputStream("resources/backGrounds/" + address + ".png"));
+            Image image = new Image(new FileInputStream("Client/resources/backGrounds/" + address + ".png"));
             ImageView backGround = new ImageView(image);
             backGround.setFitWidth(Constants.SCREEN_WIDTH);
             backGround.setFitHeight(Constants.SCREEN_HEIGHT);

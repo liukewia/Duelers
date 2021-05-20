@@ -39,8 +39,8 @@ public class UIConstants {
 
     static {
         try {
-            DEFAULT_CURSOR = new ImageCursor(new Image(new FileInputStream("resources/cursors/default.png")));
-            SELECT_CURSOR = new ImageCursor(new Image(new FileInputStream("resources/cursors/select.png")));
+            DEFAULT_CURSOR = new ImageCursor(new Image(new FileInputStream("Client/resources/cursors/default.png")));
+            SELECT_CURSOR = new ImageCursor(new Image(new FileInputStream("Client/resources/cursors/select.png")));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }

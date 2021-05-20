@@ -1,6 +1,18 @@
 package view;
 
-import controller.*;
+import static models.account.AccountType.ADMIN;
+
+import controller.Client;
+import controller.CustomCardRequestsController;
+import controller.GraphicalUserInterface;
+import controller.MainMenuController;
+import controller.OnlineGamesListController;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import javafx.application.Platform;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
@@ -8,22 +20,22 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.media.Media;
 import models.account.AccountInfo;
-import models.gui.*;
+import models.gui.BackgroundMaker;
+import models.gui.CustomCardRequestsList;
+import models.gui.DialogBox;
+import models.gui.DialogContainer;
+import models.gui.LeaderboardScroll;
+import models.gui.MainMenuBox;
+import models.gui.MenuItem;
+import models.gui.OnlineGamesList;
+import models.gui.ProfileGrid;
+import models.gui.UIConstants;
 import models.message.OnlineGame;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
-import static models.account.AccountType.ADMIN;
 
 public class MainMenu extends Show {
     private static MainMenu menu;
     private static Media backgroundMusic = new Media(
-            new File("resources/music/main_menu.m4a").toURI().toString()
+            new File("Client/resources/music/main_menu.m4a").toURI().toString()
     );
     private final List<MenuItem> items = new ArrayList<>();
     private int itemIndex = 0;
