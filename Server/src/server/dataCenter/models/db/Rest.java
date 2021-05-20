@@ -1,7 +1,13 @@
 package server.dataCenter.models.db;
 
+import static server.dataCenter.DataCenter.loadFile;
+
 import io.joshworks.restclient.http.HttpResponse;
 import io.joshworks.restclient.http.Unirest;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import server.clientPortal.models.JsonConverter;
 import server.dataCenter.DataBase;
 import server.dataCenter.models.account.Collection;
@@ -10,13 +16,6 @@ import server.dataCenter.models.card.CardType;
 import server.dataCenter.models.sorter.StoriesSorter;
 import server.gameCenter.models.game.Story;
 import server.gameCenter.models.game.TempStory;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
-import static server.dataCenter.DataCenter.loadFile;
 
 public class Rest implements DataBase {
 
@@ -29,24 +28,17 @@ public class Rest implements DataBase {
             "resources/itemCards/collectible",
             "resources/itemCards/usable",
             CUSTOM_CARD_PATH};
-    private static final String FLAG_PATH = "resources/itemCards/flag/Flag.item.card.json";
+    private static final String FLAG_PATH = "Server/resources/itemCards/flag/Flag.item.card.json";
     private static final String STORIES_PATH = "resources/stories";
-
-    private enum maps {
-        ORINGINAL_CARDS("originalCards"),
-        CUSTOM_CARDS("customCards"),
-        COLLECTIBLE_ITEMS("collectibleItems"),
-        STORIES("stories"),
-        ORIGINAL_FLAG("originalFlag");
-
-        maps(String s) {
-            path = s;
-        }
-
-        String path;
-    }
-
     final String baseAddress = "http://127.0.0.1:8080/";
+
+    public Rest() {
+        if (isEmpty()) {
+            for (maps s : maps.values()) {
+                createMap(s.path);
+            }
+        }
+    }
 
     public static void main(String[] args) {
         Rest rest = new Rest();
@@ -73,7 +65,9 @@ public class Rest implements DataBase {
         if (files != null) {
             for (File file : files) {
                 TempStory story = loadFile(file, TempStory.class);
-                if (story == null) continue;
+                if (story == null) {
+                    continue;
+                }
 
                 dataBase.addStory(new Story(story, dataBase.getOriginalCards()));
             }
@@ -86,7 +80,9 @@ public class Rest implements DataBase {
             if (files != null) {
                 for (File file : files) {
                     Card card = loadFile(file, Card.class);
-                    if (card == null) continue;
+                    if (card == null) {
+                        continue;
+                    }
                     if (path.equals(CUSTOM_CARD_PATH)) {
                         dataBase.addNewCustomCards(card);
                     } else if (card.getType() == CardType.COLLECTIBLE_ITEM) {
@@ -99,14 +95,6 @@ public class Rest implements DataBase {
         }
         dataBase.setOriginalFlag(loadFile(new File(FLAG_PATH), Card.class));
 
-    }
-
-    public Rest() {
-        if (isEmpty()) {
-            for (maps s : maps.values()) {
-                createMap(s.path);
-            }
-        }
     }
 
     private int put(String name, String key, String value) {
@@ -156,8 +144,9 @@ public class Rest implements DataBase {
             response = Unirest.post(baseAddress + path)
                     .fields(parameters)
                     .asString();
-            if (response.getStatus() == 200)
-                return JsonConverter.fromJson(response.getBody(), ArrayList.class);
+            if (response.getStatus() == 200) {
+                return JsonConverter.fromJson(response.asString(), ArrayList.class);
+            }
         } catch (Exception e) {
 
             e.printStackTrace();
@@ -180,7 +169,7 @@ public class Rest implements DataBase {
             response = Unirest.post(baseAddress + path)
                     .fields(parameters)
                     .asString();
-            return response.getBody();
+            return response.asString();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -203,7 +192,6 @@ public class Rest implements DataBase {
         }
         return 0;
     }
-
 
     @Override
     public Card getCard(String cardName) {
@@ -237,7 +225,6 @@ public class Rest implements DataBase {
         return arrayList;
     }
 
-
     @Override
     public List<Card> getCollectibleItems() {
         return getList(getAllValues(maps.COLLECTIBLE_ITEMS.path), Card.class);
@@ -256,6 +243,11 @@ public class Rest implements DataBase {
     @Override
     public Card getOriginalFlag() {
         return JsonConverter.fromJson(getFromDataBase(maps.ORIGINAL_FLAG.path, maps.ORIGINAL_FLAG.path), Card.class);
+    }
+
+    @Override
+    public void setOriginalFlag(Card card) {
+        put(maps.ORIGINAL_FLAG.path, maps.ORIGINAL_FLAG.path, JsonConverter.toJson(card));
     }
 
     @Override
@@ -280,11 +272,6 @@ public class Rest implements DataBase {
     }
 
     @Override
-    public void setOriginalFlag(Card card) {
-        put(maps.ORIGINAL_FLAG.path, maps.ORIGINAL_FLAG.path, JsonConverter.toJson(card));
-    }
-
-    @Override
     public void addStory(Story story) {
         put(maps.STORIES.path, JsonConverter.toJson(story), "");
 
@@ -293,5 +280,19 @@ public class Rest implements DataBase {
     @Override
     public boolean isEmpty() {
         return true;
+    }
+
+    private enum maps {
+        ORINGINAL_CARDS("originalCards"),
+        CUSTOM_CARDS("customCards"),
+        COLLECTIBLE_ITEMS("collectibleItems"),
+        STORIES("stories"),
+        ORIGINAL_FLAG("originalFlag");
+
+        String path;
+
+        maps(String s) {
+            path = s;
+        }
     }
 }

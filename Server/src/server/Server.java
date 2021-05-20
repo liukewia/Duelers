@@ -1,5 +1,9 @@
 package server;
 
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
+import java.util.Set;
 import server.chatCenter.ChatCenter;
 import server.clientPortal.ClientPortal;
 import server.clientPortal.models.message.CardPosition;
@@ -14,15 +18,15 @@ import server.exceptions.ClientException;
 import server.exceptions.LogicException;
 import server.exceptions.ServerException;
 import server.gameCenter.GameCenter;
-import server.gameCenter.models.game.*;
+import server.gameCenter.models.game.CellEffect;
+import server.gameCenter.models.game.Game;
+import server.gameCenter.models.game.Story;
+import server.gameCenter.models.game.TargetData;
+import server.gameCenter.models.game.Troop;
 import server.gameCenter.models.map.Position;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
-import java.util.Set;
-
 public class Server {
+
     private static Server server;
     public final String serverName;
 
@@ -271,26 +275,29 @@ public class Server {
     private void sendStories(Message message) throws LogicException {
         DataCenter.getInstance().loginCheck(message);
         addToSendingMessages(Message.makeStoriesCopyMessage(message.getSender(),
-                DataCenter.getInstance().getStories().toArray(Story[]::new)));
+                DataCenter.getInstance().getStories().toArray(new Story[]{})));
     }
 
     private void sendOnlineGames(Message message) throws LogicException {
         DataCenter.getInstance().loginCheck(message);
         Account account = DataCenter.getInstance().getClients().get(message.getSender());
-        if (account.getAccountType() != AccountType.ADMIN)
+        if (account.getAccountType() != AccountType.ADMIN) {
             throw new ClientException("You don't have admin access!");
+        }
         OnlineGame[] onlines = GameCenter.getInstance().getOnlineGames();
         addToSendingMessages(Message.makeOnlineGamesCopyMessage(message.getSender(), onlines));
     }
 
     private void sendOriginalCards(Message message) throws LogicException {
         DataCenter.getInstance().loginCheck(message);
-        addToSendingMessages(Message.makeOriginalCardsCopyMessage(message.getSender(), DataCenter.getInstance().getOriginalCards()));
+        addToSendingMessages(
+                Message.makeOriginalCardsCopyMessage(message.getSender(), DataCenter.getInstance().getOriginalCards()));
     }
 
     private void sendCustomCards(Message message) throws LogicException {
         DataCenter.getInstance().loginCheck(message);
-        addToSendingMessages(Message.makeCustomCardsCopyMessage(message.getSender(), DataCenter.getInstance().getNewCustomCards()));
+        addToSendingMessages(
+                Message.makeCustomCardsCopyMessage(message.getSender(), DataCenter.getInstance().getNewCustomCards()));
 
     }
 
@@ -355,7 +362,9 @@ public class Server {
 
     public void sendSpellMessage(Game game, TargetData target, AvailabilityType availabilityType) {
         Set<Position> positions = target.getPositions();
-        if (positions.size() == 0) return;
+        if (positions.size() == 0) {
+            return;
+        }
         for (Account account : game.getObservers()) {
             String clientName = DataCenter.getInstance().getAccounts().get(account);
             if (clientName == null) {
@@ -411,9 +420,11 @@ public class Server {
 
     public void sendChangeCardNumberMessage(Card card) {
         for (Account account : DataCenter.getInstance().getAccounts().keySet()) {
-            if (account.getAccountType() == AccountType.ADMIN && DataCenter.getInstance().isOnline(account.getUsername())) {
-                addToSendingMessages(Message.makeChangeCardNumberMessage(DataCenter.getInstance().getAccounts().get(account),
-                        card, card.getRemainingNumber()));
+            if (account.getAccountType() == AccountType.ADMIN && DataCenter.getInstance()
+                    .isOnline(account.getUsername())) {
+                addToSendingMessages(
+                        Message.makeChangeCardNumberMessage(DataCenter.getInstance().getAccounts().get(account),
+                                card, card.getRemainingNumber()));
             }
         }
     }
@@ -434,26 +445,31 @@ public class Server {
 
     public void sendAddToCustomCardsMessage(Card card) {
         for (Account account : DataCenter.getInstance().getAccounts().keySet()) {
-            if (account.getAccountType() == AccountType.ADMIN && DataCenter.getInstance().isOnline(account.getUsername())) {
-                addToSendingMessages(Message.makeAddCustomCardMessage(DataCenter.getInstance().getAccounts().get(account),
-                        card));
+            if (account.getAccountType() == AccountType.ADMIN && DataCenter.getInstance()
+                    .isOnline(account.getUsername())) {
+                addToSendingMessages(
+                        Message.makeAddCustomCardMessage(DataCenter.getInstance().getAccounts().get(account),
+                                card));
             }
         }
     }
 
     public void sendRemoveCustomCardsMessage(Card card) {
         for (Account account : DataCenter.getInstance().getAccounts().keySet()) {
-            if (account.getAccountType() == AccountType.ADMIN && DataCenter.getInstance().isOnline(account.getUsername())) {
-                addToSendingMessages(Message.makeRemoveCustomCardMessage(DataCenter.getInstance().getAccounts().get(account),
-                        card.getName()));
+            if (account.getAccountType() == AccountType.ADMIN && DataCenter.getInstance()
+                    .isOnline(account.getUsername())) {
+                addToSendingMessages(
+                        Message.makeRemoveCustomCardMessage(DataCenter.getInstance().getAccounts().get(account),
+                                card.getName()));
             }
         }
     }
 
     public void sendAccountUpdateMessage(Account account) {
         String clientName = DataCenter.getInstance().getAccounts().get(account);
-        if (clientName == null)
+        if (clientName == null) {
             return;
+        }
         addToSendingMessages(Message.makeAccountCopyMessage(clientName, account));
     }
 }

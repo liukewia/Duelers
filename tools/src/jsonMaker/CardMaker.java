@@ -1,9 +1,9 @@
 package jsonMaker;
 
-import server.detaCenter.models.card.AttackType;
-import server.detaCenter.models.card.Card;
-import server.detaCenter.models.card.CardType;
-import server.detaCenter.models.card.spell.*;
+import server.dataCenter.models.card.AttackType;
+import server.dataCenter.models.card.Card;
+import server.dataCenter.models.card.CardType;
+import server.dataCenter.models.card.spell.*;
 import server.gameCenter.models.map.Position;
 
 import java.io.FileWriter;
