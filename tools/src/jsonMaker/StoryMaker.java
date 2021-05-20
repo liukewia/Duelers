@@ -2,17 +2,16 @@ package jsonMaker;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import server.dataCenter.models.card.Card;
-import server.dataCenter.models.card.Deck;
-import server.gameCenter.models.game.GameType;
-import server.gameCenter.models.game.Story;
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
+import server.dataCenter.models.card.Card;
+import server.dataCenter.models.card.Deck;
+import server.gameCenter.models.game.GameType;
+import server.gameCenter.models.game.Story;
 
 public class StoryMaker {
     private static Scanner scanner = new Scanner(System.in);
