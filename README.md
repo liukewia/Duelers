@@ -25,7 +25,8 @@ eclipse 教程：https://blog.csdn.net/coslay/article/details/46895543
 
 ## git分支管理
 
-img
+![1](./images/git.png)
+
 
 ## git commit message
 
