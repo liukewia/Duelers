@@ -30,7 +30,9 @@ public class Server {
     private static Server server;
     public final String serverName;
 
+    // a queue for sending messages from server to client
     private final Queue<Message> sendingMessages = new LinkedList<>();
+    // a queue for receiving messages from client to server
     private final Queue<Message> receivingMessages = new LinkedList<>();
 
     private Server(String serverName) {
@@ -52,6 +54,7 @@ public class Server {
         GameCenter.getInstance().start();
         ClientPortal.getInstance().start();
 
+        // anonymous thread for sending messages
         new Thread(() -> {
             serverPrint("Server Thread:sending messages is started...");
             while (true) {
@@ -63,15 +66,19 @@ public class Server {
                     ClientPortal.getInstance().sendMessage(message.getReceiver(), message.toJson());
                     System.out.println("TO:" + message.getReceiver() + ":  " + message.toJson());//TODO:remove
                 } else {
+                    // queue for sending messages is currently empty, wait for others notifying it to save resource
                     try {
+                        // lock the queue preventing others from access,
                         synchronized (sendingMessages) {
                             sendingMessages.wait();
                         }
                     } catch (InterruptedException ignored) {
+                        // will have compile error if not catching this exception
                     }
                 }
             }
         }).start();
+        // anonymous thread for sending messages
         new Thread(() -> {
             serverPrint("Server Thread:receiving messages is started...");
             while (true) {
